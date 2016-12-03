@@ -31,16 +31,16 @@ trait SearchableTrait
      * @param  boolean $entireTextOnly
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSearch(Builder $q, $search, $threshold = null, $entireText = false, $entireTextOnly = false)
+    public function scopeSearch(Builder $q, $search, $threshold = null, $entireText = false, $entireTextOnly = false, $joinsArg = null)
     {
-        return $this->scopeSearchRestricted($q, $search, null, $threshold, $entireText, $entireTextOnly);
+        return $this->scopeSearchRestricted($q, $search, null, $threshold, $entireText, $entireTextOnly, $joinsArg);
     }
 
-    public function scopeSearchRestricted(Builder $q, $search, $restriction, $threshold = null, $entireText = false, $entireTextOnly = false)
+    public function scopeSearchRestricted(Builder $q, $search, $restriction, $threshold = null, $entireText = false, $entireTextOnly = false, $joinsArg)
     {
         $query = clone $q;
         $query->select($this->getTable() . '.*');
-        $this->makeJoins($query);
+        $this->makeJoins($query, $joinsArg);
 
         if ( ! $search)
         {
@@ -167,7 +167,7 @@ trait SearchableTrait
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      */
-    protected function makeJoins(Builder $query)
+    protected function makeJoins(Builder $query, Array $joinsArg)
     {
         foreach ($this->getJoins() as $table => $keys) {
             $query->leftJoin($table, function ($join) use ($keys) {
@@ -175,6 +175,11 @@ trait SearchableTrait
                 if (array_key_exists(2, $keys) && array_key_exists(3, $keys)) {
                     $join->where($keys[2], '=', $keys[3]);
                 }
+					 if($joinsArg != null && is_array($joinsArg) && isset($joinsArg[$table])) {
+						 for($i = 0; $i < count($joinsArg[$table]); $i++) {
+							 $join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
+						 }
+					 }
             });
         }
     }
