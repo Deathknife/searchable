@@ -177,7 +177,11 @@ trait SearchableTrait
                 }
 					 if($joinsArg != null && is_array($joinsArg) && isset($joinsArg[$table])) {
 						 for($i = 0; $i < count($joinsArg[$table]); $i++) {
-							 $join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
+		               if(is_array($joinsArg[$table][$i]["val2"])) {
+		                 $join->whereIn($joinsArg[$table][$i]["val1"], $joinsArg[$table][$i]["val2"]);
+		               }else {
+								$join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
+		               }
 						 }
 					 }
             });
