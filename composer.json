@@ -1,13 +1,16 @@
 {
-    "name": "nicolaslopezj/searchable",
-    "description": "Eloquent model search trait.",
+    "name": "deathknife/searchable",
+    "description": "Eloquent model search trait. FORK",
     "keywords": ["laravel", "eloquent", "search", "searchable", "database", "model"],
     "license": "MIT",
     "authors": [
         {
             "name": "Nicolas Lopez",
             "email": "nicolaslopezj@me.com"
-        }
+        },
+		  {
+			  "name": "Deathknife"
+		  }
     ],
     "require": {
         "php": ">=5.4.0",
@@ -16,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nicolaslopezj\\Searchable\\": "src/"
+            "deathknife\\Searchable\\": "src/"
         }
     },
     "minimum-stability": "stable"
