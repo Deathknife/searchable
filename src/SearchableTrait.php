@@ -167,7 +167,7 @@ trait SearchableTrait
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      */
-    protected function makeJoins(Builder $query, Array $joinsArg)
+    protected function makeJoins(Builder $query, $joinsArg=null)
     {
         foreach ($this->getJoins() as $table => $keys) {
             $query->leftJoin($table, function ($join) use ($keys) {
