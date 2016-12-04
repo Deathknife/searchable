@@ -179,6 +179,12 @@ trait SearchableTrait
 						 for($i = 0; $i < count($joinsArg[$table]); $i++) {
 		               if(is_array($joinsArg[$table][$i]["val2"])) {
 		                 $join->whereIn($joinsArg[$table][$i]["val1"], $joinsArg[$table][$i]["val2"]);
+						   }else if(is_null($joinsArg[$table][$i]["val2"])) {
+								if($joinsArg[$table][$i]["operator"] == true) {
+									$join->whereNull($joinsArg[$table][$i]["val1"]);
+								}else if($joinsArg[$table][$i]["operator"] == false) {
+									$join->whereNotNull($joinsArg[$table][$i]["val1"]);
+								}
 		               }else {
 								$join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
 		               }
