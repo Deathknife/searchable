@@ -174,17 +174,29 @@ trait SearchableTrait
     protected function makeJoins(Builder $query, $joinsArg=null)
     {
         foreach ($this->getJoins() as $table => $keys) {
-            $query->leftJoin($table, function ($join) use ($keys) {
-                $join->on($keys[0], '=', $keys[1]);
-                if (array_key_exists(2, $keys) && array_key_exists(3, $keys)) {
-                    $join->where($keys[2], '=', $keys[3]);
-                }
-					 if($joinsArg != null && is_array($joinsArg) && isset($joinsArg[$table])) {
-						 for($i = 0; $i < count($joinsArg[$table]); $i++) {
-							 $join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
+			  if($joinsArg != null && is_array($joinsArg) && isset($joinsArg[$table])) {
+	            $query->join($table, function ($join) use ($keys, $joinsArg, $table) {
+	                $join->on($keys[0], '=', $keys[1]);
+	                if (array_key_exists(2, $keys) && array_key_exists(3, $keys)) {
+	                    $join->where($keys[2], '=', $keys[3]);
+	                }
+						 if($joinsArg != null && is_array($joinsArg) && isset($joinsArg[$table])) {
+							 for($i = 0; $i < count($joinsArg[$table]); $i++) {
+			               if(is_array($joinsArg[$table][$i]["val2"])) {
+			                 $join->whereIn($joinsArg[$table][$i]["val1"], $joinsArg[$table][$i]["val2"]);
+							   }else if(is_null($joinsArg[$table][$i]["val2"])) {
+									if($joinsArg[$table][$i]["operator"] == true) {
+										$join->whereNull($joinsArg[$table][$i]["val1"]);
+									}else if($joinsArg[$table][$i]["operator"] == false) {
+										$join->whereNotNull($joinsArg[$table][$i]["val1"]);
+									}
+			               }else {
+									$join->where($joinsArg[$table][$i]["val1"], isset($joinsArg[$table][$i]["operator"]) ? $joinsArg[$table][$i]["operator"] : '=', $joinsArg[$table][$i]["val2"]);
+			               }
+							 }
 						 }
-					 }
-            });
+	         });
+				}
         }
     }
 
